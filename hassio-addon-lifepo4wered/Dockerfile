@@ -7,9 +7,7 @@ RUN apt-get update && \
     make all USE_SYSTEMD=0 PREFIX=/usr
 
 
-ARG BUILD_FROM=homeassistant/aarch64-base:latest
-FROM $BUILD_FROM
-
+FROM homeassistant/aarch64-base:latest
 ENV LANG C.UTF-8
 
 WORKDIR /
