@@ -1,11 +1,9 @@
-FROM ubuntu:latest as build
+FROM alpine:latest as build
 WORKDIR /tmp
-RUN apt-get update && \
-    apt-get -y install build-essential git libsystemd-dev && \
+RUN apk add linux-headers i2c-tools-dev make g++ git && \
     git clone https://github.com/xorbit/LiFePO4wered-Pi.git && \
     cd LiFePO4wered-Pi && \
     make all USE_SYSTEMD=0 PREFIX=/usr
-
 
 FROM homeassistant/aarch64-base:latest
 ENV LANG C.UTF-8
