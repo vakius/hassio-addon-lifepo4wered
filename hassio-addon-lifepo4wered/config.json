@@ -8,7 +8,7 @@
   "boot": "auto",
   "options": {},
   "schema": {}, 
-  "arch": ["aarch64"]
+  "arch": ["aarch64"],
   "devices": [ "/dev/i2c-1:/dev/i2c-1:rwm" ]
 
 }
