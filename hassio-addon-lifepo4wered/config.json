@@ -1,6 +1,6 @@
 {
   "name": "LiFePO4wered Addon",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "slug": "lifepo4wered",
   "description": "Add-on with service for LiFePO4Wered Pi+ UPS",
   "url": "https://github.com/vakius/hassio-addon-lifepo4wered/tree/master/hassio-addon-lifepo4wered",
@@ -9,6 +9,6 @@
   "options": {},
   "schema": {}, 
   "arch": ["aarch64"],
-  "devices": [ "/dev/i2c-1:/dev/i2c-1:rwm" ]
+  "devices": [ "/dev/i2c-1" ]
 
 }
