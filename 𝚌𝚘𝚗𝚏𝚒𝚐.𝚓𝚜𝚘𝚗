@@ -1,0 +1,13 @@
+{
+  "name": "LiFePO4wered Addon",
+  "version": "0.1",
+  "slug": "lifepo4wered",
+  "description": "Add-on with service for LiFePO4Wered Pi+ UPS",
+  "url": "https://github.com/vakius/hassio-addon-lifepo4wered",
+  "startup": "once",
+  "boot": "manual",
+  "options": {},
+  "schema": {}, 
+  "arch": ["aarch64"]
+
+}
