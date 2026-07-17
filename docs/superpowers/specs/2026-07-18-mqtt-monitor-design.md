@@ -45,10 +45,14 @@ present and one subprocess call reads everything at once.
 
 - Dockerfile: add `python3` + `py3-paho-mqtt` (Alpine packages), copy script
   and `run.sh`, `CMD ["/run.sh"]`.
-- `run.sh` (bashio): pull MQTT host/port/user/password from Supervisor
-  services API (works out of the box with the Mosquitto addon), allow
-  overrides from addon options, start `lifepo4wered-daemon -f` in the
-  background, run the monitor in the foreground.
+- `run.sh` (bashio): `lifepo4wered-daemon -f` is the exec'd main process,
+  started immediately — it must contact the UPS within PI_BOOT_TO seconds of
+  power-on or the UPS cuts power, so nothing (Supervisor API calls included)
+  may delay it and monitor failures must never take it down. The monitor runs
+  in a background subshell that pulls MQTT host/port/user/password from the
+  Supervisor services API (works out of the box with the Mosquitto addon,
+  addon options can override) and restarts the monitor with 30 s backoff if
+  it exits.
 - `config.json`: add `"services": ["mqtt:need"]`, addon options
   (`poll_interval`, optional MQTT overrides), bump version.
 
