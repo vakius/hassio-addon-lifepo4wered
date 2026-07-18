@@ -32,12 +32,19 @@ LIFEPO4WERED_FAKE=1 MQTT_HOST=... python3 hassio-addon-lifepo4wered/lifepo4wered
 
 ## Stopping the addon vs. shutting down
 
-Stopping the addon does **not** power off the Pi: the daemon is killed
-without notifying the UPS, so power stays on (`run.sh` traps the stop
-signal — the daemon would otherwise report "system shutting down" and the
-UPS would cut power seconds later). While the addon is stopped, UPS-side
-features (button shutdown, low-battery clean shutdown, boot watchdog
-handshake) are inactive until it starts again.
+The `signal_ups_on_stop` option controls what happens to the daemon when
+the addon is stopped:
+
+- **Off (default)** — the daemon is killed (SIGKILL) without notifying the
+  UPS, so power stays on. Addon stops, restarts and updates are safe. The
+  system clock is not saved to the UPS RTC on stop (it still is on
+  UPS-commanded shutdowns), and while the addon is stopped, UPS-side
+  features (button shutdown, low-battery clean shutdown) are inactive.
+- **On** — the daemon is terminated gracefully (SIGTERM), the native
+  LiFePO4wered behavior: it saves the clock to the UPS RTC and reports
+  "system shutting down" (`PI_RUNNING = 0`), so the UPS **cuts power to
+  the Pi a few seconds after the addon stops**. Only use this if you stop
+  the addon exclusively as part of powering the system down.
 
 When the UPS itself commands a shutdown (button press, low battery,
 `AUTO_SHDN_TIME` after power loss), the addon performs a clean host

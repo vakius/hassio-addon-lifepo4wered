@@ -47,12 +47,23 @@ bashio::log.info "Starting lifepo4wered-daemon"
 lifepo4wered-daemon -f &
 DAEMON_PID=$!
 
-# Stopping the addon must not power off the Pi: the daemon interprets
-# SIGTERM as "system is shutting down" and tells the UPS to cut power
-# (PI_RUNNING=0). SIGKILL it so it cannot signal the UPS; it will pick
-# up again when the addon restarts.
-trap 'bashio::log.info "Addon stopping; daemon killed without signaling UPS"; \
-      kill -9 "$DAEMON_PID" 2>/dev/null; exit 0' TERM INT
+# The daemon interprets SIGTERM as "system is shutting down" and tells
+# the UPS to cut power (PI_RUNNING=0). By default we SIGKILL it instead
+# so stopping the addon leaves the Pi powered; signal_ups_on_stop=true
+# restores the daemon's native behavior (UPS cuts power after the stop).
+on_stop() {
+    if bashio::config.true 'signal_ups_on_stop'; then
+        bashio::log.warning \
+            "Addon stopping; signaling UPS - power will be cut in seconds"
+        kill -TERM "$DAEMON_PID" 2>/dev/null
+        wait "$DAEMON_PID"
+    else
+        bashio::log.info "Addon stopping; daemon killed without signaling UPS"
+        kill -9 "$DAEMON_PID" 2>/dev/null
+    fi
+    exit 0
+}
+trap on_stop TERM INT
 
 wait "$DAEMON_PID"
 

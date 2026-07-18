@@ -1,0 +1,28 @@
+configuration:
+  poll_interval:
+    name: Poll interval
+    description: >-
+      How often (in seconds) UPS registers are read and published to MQTT.
+  signal_ups_on_stop:
+    name: Signal UPS on addon stop
+    description: >-
+      Off (default): stopping the addon kills the daemon silently and the
+      UPS keeps powering the Pi; use this so addon restarts and updates are
+      safe. On: stopping the addon terminates the daemon gracefully, which
+      saves the clock to the UPS RTC but tells the UPS the system is
+      shutting down — the UPS WILL CUT POWER to the Pi a few seconds after
+      the addon stops.
+  mqtt_host:
+    name: MQTT host
+    description: >-
+      Optional MQTT broker override. Leave empty to auto-detect the broker
+      provided by the Mosquitto addon.
+  mqtt_port:
+    name: MQTT port
+    description: Optional broker port override (default 1883).
+  mqtt_user:
+    name: MQTT username
+    description: Optional broker username override.
+  mqtt_password:
+    name: MQTT password
+    description: Optional broker password override.

@@ -1,6 +1,6 @@
 {
   "name": "LiFePO4wered Addon",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "init": false,
   "hassio_api": true,
   "hassio_role": "admin",
@@ -11,10 +11,12 @@
   "boot": "auto",
   "services": ["mqtt:want"],
   "options": {
-    "poll_interval": 30
+    "poll_interval": 30,
+    "signal_ups_on_stop": false
   },
   "schema": {
     "poll_interval": "int(5,3600)",
+    "signal_ups_on_stop": "bool",
     "mqtt_host": "str?",
     "mqtt_port": "port?",
     "mqtt_user": "str?",
