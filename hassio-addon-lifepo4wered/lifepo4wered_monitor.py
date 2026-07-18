@@ -83,23 +83,25 @@ DIAG_VOLTAGE = [
     ("VBAT_MIN", "Battery minimum voltage"),
     ("VBAT_SHDN", "Battery shutdown voltage"),
     ("VBAT_BOOT", "Battery boot voltage"),
-    ("VOUT_MAX", "Output maximum voltage"),
+    ("VOUT_MAX", "Max output voltage to allow boot"),
     ("VIN_THRESHOLD", "Input voltage threshold"),
 ]
 
-# raw-value diagnostic registers (units vary or are unitless flags/timers)
+# raw-value diagnostic registers; units per the product brief (the CLI
+# scales the timeouts to s and AUTO_SHDN_TIME to min; SHDN_DELAY stays
+# raw ~8 Hz ticks)
 DIAG_RAW = [
-    ("AUTO_BOOT", "Auto boot mode"),
-    ("SHDN_DELAY", "Shutdown delay"),
-    ("AUTO_SHDN_TIME", "Auto shutdown time"),
-    ("PI_BOOT_TO", "Pi boot timeout"),
-    ("PI_SHDN_TO", "Pi shutdown timeout"),
-    ("WATCHDOG_CFG", "Watchdog mode"),
-    ("WATCHDOG_GRACE", "Watchdog grace"),
-    ("WATCHDOG_TIMER", "Watchdog timer"),
-    ("PI_RUNNING", "Pi running flag"),
-    ("LED_STATE", "LED state"),
-    ("TOUCH_STATE", "Touch state"),
+    ("AUTO_BOOT", "Auto boot mode", None),
+    ("SHDN_DELAY", "Shutdown delay", None),
+    ("AUTO_SHDN_TIME", "Auto shutdown time", "min"),
+    ("PI_BOOT_TO", "Pi boot timeout", "s"),
+    ("PI_SHDN_TO", "Pi shutdown timeout", "s"),
+    ("WATCHDOG_CFG", "Watchdog mode", None),
+    ("WATCHDOG_GRACE", "Watchdog grace period", "s"),
+    ("WATCHDOG_TIMER", "Watchdog timer", "s"),
+    ("PI_RUNNING", "Pi running", None),
+    ("LED_STATE", "LED state", None),
+    ("TOUCH_STATE", "Touch button state", None),
 ]
 
 
@@ -184,11 +186,13 @@ def discovery_messages(discovery_prefix, state_topic, availability_topic):
             value_template=millivolts(key),
         )
 
-    for key, name in DIAG_RAW:
+    for key, name, unit in DIAG_RAW:
+        extra = {"unit_of_measurement": unit} if unit else {}
         yield entity(
             "sensor", key, name,
             entity_category="diagnostic",
             value_template="{{ value_json.%s }}" % key,
+            **extra,
         )
 
     yield entity(

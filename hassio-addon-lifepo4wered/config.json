@@ -1,6 +1,6 @@
 {
   "name": "LiFePO4wered Addon",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "init": false,
   "slug": "lifepo4wered",
   "description": "Add-on with service and MQTT monitor for LiFePO4wered/Pi+ UPS",

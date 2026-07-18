@@ -62,6 +62,17 @@ class DiscoveryTest(unittest.TestCase):
         self.assertEqual(cfg["entity_category"], "diagnostic")
         self.assertEqual(cfg["unit_of_measurement"], "V")
 
+    def test_timer_registers_have_documented_units(self):
+        for key, unit in (("pi_boot_to", "s"), ("pi_shdn_to", "s"),
+                          ("watchdog_grace", "s"), ("watchdog_timer", "s"),
+                          ("auto_shdn_time", "min")):
+            cfg = self.messages[
+                "homeassistant/sensor/lifepo4wered/%s/config" % key]
+            self.assertEqual(cfg["unit_of_measurement"], unit, key)
+        self.assertNotIn(
+            "unit_of_measurement",
+            self.messages["homeassistant/sensor/lifepo4wered/shdn_delay/config"])
+
     def test_skipped_registers_have_no_entity(self):
         for key in ("i2c_reg_ver", "dco_rsel", "vbat_offset", "cfg_write"):
             self.assertNotIn(
