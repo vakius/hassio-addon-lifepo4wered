@@ -30,6 +30,20 @@ LIFEPO4WERED_FAKE=1 MQTT_HOST=... python3 hassio-addon-lifepo4wered/lifepo4wered
 
 `LIFEPO4WERED_FAKE=1` replaces the CLI with embedded sample data.
 
+## Stopping the addon vs. shutting down
+
+Stopping the addon does **not** power off the Pi: the daemon is killed
+without notifying the UPS, so power stays on (`run.sh` traps the stop
+signal — the daemon would otherwise report "system shutting down" and the
+UPS would cut power seconds later). While the addon is stopped, UPS-side
+features (button shutdown, low-battery clean shutdown, boot watchdog
+handshake) are inactive until it starts again.
+
+When the UPS itself commands a shutdown (button press, low battery,
+`AUTO_SHDN_TIME` after power loss), the addon performs a clean host
+shutdown through the Supervisor, and the UPS cuts power once shutdown
+completes.
+
 ## Setup notes
 
 

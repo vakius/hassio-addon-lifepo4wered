@@ -44,4 +44,27 @@ setup_mqtt_env() {
 ) &
 
 bashio::log.info "Starting lifepo4wered-daemon"
-exec lifepo4wered-daemon -f
+lifepo4wered-daemon -f &
+DAEMON_PID=$!
+
+# Stopping the addon must not power off the Pi: the daemon interprets
+# SIGTERM as "system is shutting down" and tells the UPS to cut power
+# (PI_RUNNING=0). SIGKILL it so it cannot signal the UPS; it will pick
+# up again when the addon restarts.
+trap 'bashio::log.info "Addon stopping; daemon killed without signaling UPS"; \
+      kill -9 "$DAEMON_PID" 2>/dev/null; exit 0' TERM INT
+
+wait "$DAEMON_PID"
+
+# The daemon exited on its own: either the UPS commanded a shutdown
+# (button press, low battery, auto shutdown after power loss) or the
+# daemon crashed. Its own shutdown trigger (init 0) is useless inside
+# a container, so perform a clean host shutdown via the Supervisor.
+if [ "$(lifepo4wered-cli get PI_RUNNING 2>/dev/null)" = "0" ]; then
+    bashio::log.warning "UPS commanded shutdown; shutting down the host"
+    bashio::host.shutdown
+    exit 0
+fi
+
+bashio::log.error "lifepo4wered-daemon exited unexpectedly"
+exit 1
