@@ -1,6 +1,7 @@
 {
   "name": "LiFePO4wered Addon",
-  "version": "0.1.0",
+  "version": "0.1.1",
+  "init": false,
   "slug": "lifepo4wered",
   "description": "Add-on with service and MQTT monitor for LiFePO4wered/Pi+ UPS",
   "url": "https://github.com/vakius/hassio-addon-lifepo4wered/tree/master/hassio-addon-lifepo4wered",
