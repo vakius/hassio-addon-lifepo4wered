@@ -84,7 +84,7 @@ DIAG_VOLTAGE = [
     ("VBAT_SHDN", "Battery shutdown voltage"),
     ("VBAT_BOOT", "Battery boot voltage"),
     ("VOUT_MAX", "Output maximum voltage"),
-    ("VIN_THRESHOLD", "Input power threshold"),
+    ("VIN_THRESHOLD", "Input voltage threshold"),
 ]
 
 # raw-value diagnostic registers (units vary or are unitless flags/timers)
